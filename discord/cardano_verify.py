@@ -8,7 +8,7 @@ def verify_address(address, blockfrost_project_id):
   stake_address = None
 
   if 'stake' in address:
-    return verify_pool(address)
+    return verify_pool(address, blockfrost_project_id)
 
   response = requests.get(
     address_url.format(address=address),
@@ -17,7 +17,7 @@ def verify_address(address, blockfrost_project_id):
 
   if response.status_code == 200:
     stake_address = response.json()['stake_address']
-    return verify_pool(stake_address)
+    return verify_pool(stake_address, blockfrost_project_id)
   else:
     cardanoscan_url = 'https://cardanoscan.io/address/{address}'
     page = requests.get(cardanoscan_url.format(address=address))
@@ -26,7 +26,7 @@ def verify_address(address, blockfrost_project_id):
     for a in addrs:
       if 'stake' in a.string:
         stake_address = a.string
-        return verify_address(stake_address)
+        return verify_address(stake_address, blockfrost_project_id)
       return False
   
 
